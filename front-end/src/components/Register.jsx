@@ -1,4 +1,36 @@
+import React, { useState } from "react";
+import Errors from "./Errors";
+
 export default function RegisterForm() {
+
+
+    const [Nom, setNom] = useState("");
+    const [Email, setEmail] = useState("");
+    const [Password, setPassword] = useState("");
+    const [ConfirmPassword, setConfirmPassword] = useState("");
+    const [ArrayOfErrors,setArrayOfErrors] = useState([]);
+    function handleSubmit(e) {
+        e.preventDefault();
+       let  erreurs = [];
+        if (Nom.length < 3) {
+            erreurs.push("Votre nom doit contenir au moins 3 caractères.");
+        }else if (Nom.length > 20) {
+            erreurs.push("Votre nom ne doit pas dépasser 20 caractères.");
+        }
+        if (!/\S+@\S+\.\S+/.test(Email)) {
+            erreurs.push("Veuillez entrer une adresse email valide.");
+        }
+        if (Password.length < 6) {
+            erreurs.push("Votre mot de passe doit contenir au moins 6 caractères.");
+        }
+        if (Password !== ConfirmPassword) {
+            erreurs.push("Les mots de passe ne correspondent pas.");
+        }
+        setArrayOfErrors(erreurs);
+        if (erreurs.length === 0) {
+            alert("Inscription réussie !");
+        }
+    }
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <form className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
@@ -6,6 +38,8 @@ export default function RegisterForm() {
           Create Account
         </h2>
 
+        
+        {ArrayOfErrors.length > 0 && <Errors errors={ArrayOfErrors} />}
         {/* Name */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-600 mb-1">
@@ -15,6 +49,8 @@ export default function RegisterForm() {
             type="text"
             placeholder="Enter your name"
             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={Nom} 
+            onChange={(e) => setNom(e.target.value)}
           />
         </div>
 
@@ -24,6 +60,8 @@ export default function RegisterForm() {
             Email
           </label>
           <input
+            value={Email}
+            onChange={(e) => setEmail(e.target.value)}
             type="email"
             placeholder="Enter your email"
             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -36,6 +74,8 @@ export default function RegisterForm() {
             Password
           </label>
           <input
+            value={Password}
+            onChange={(e) => setPassword(e.target.value)}
             type="password"
             placeholder="Enter your password"
             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -48,6 +88,8 @@ export default function RegisterForm() {
             Confirm Password
           </label>
           <input
+            value={ConfirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
             type="password"
             placeholder="Confirm your password"
             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -56,6 +98,7 @@ export default function RegisterForm() {
 
         {/* Submit Button */}
         <button
+            onClick={handleSubmit}
           type="submit"
           className="w-full bg-blue-500 text-white py-2 rounded-lg font-medium hover:bg-blue-600 transition"
         >
