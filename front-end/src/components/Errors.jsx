@@ -1,7 +1,7 @@
 import React from 'react'
 
 
-function Errors({ errors }) {
+function Errors({ errors}) {
 
     console.log(errors);
   return (

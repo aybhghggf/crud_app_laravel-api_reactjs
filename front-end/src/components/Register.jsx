@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Errors from "./Errors";
 
-export default function RegisterForm() {
+export default function RegisterForm({getDataFromChildren, boolReq }) {
 
 
     const [Nom, setNom] = useState("");
@@ -9,6 +9,8 @@ export default function RegisterForm() {
     const [Password, setPassword] = useState("");
     const [ConfirmPassword, setConfirmPassword] = useState("");
     const [ArrayOfErrors,setArrayOfErrors] = useState([]);
+    const [sendReq,setSendReq] = useState(false);
+
     function handleSubmit(e) {
         e.preventDefault();
        let  erreurs = [];
@@ -28,7 +30,9 @@ export default function RegisterForm() {
         }
         setArrayOfErrors(erreurs);
         if (erreurs.length === 0) {
-            alert("Inscription réussie !");
+            getDataFromChildren(Nom, Email, Password, ConfirmPassword);
+            setSendReq(true);
+            boolReq(true);
         }
     }
   return (
@@ -46,6 +50,7 @@ export default function RegisterForm() {
             Name
           </label>
           <input
+            name="Nom"
             type="text"
             placeholder="Enter your name"
             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -60,6 +65,7 @@ export default function RegisterForm() {
             Email
           </label>
           <input
+            name="Email"
             value={Email}
             onChange={(e) => setEmail(e.target.value)}
             type="email"
@@ -74,6 +80,7 @@ export default function RegisterForm() {
             Password
           </label>
           <input
+            name="Password"
             value={Password}
             onChange={(e) => setPassword(e.target.value)}
             type="password"
@@ -88,6 +95,7 @@ export default function RegisterForm() {
             Confirm Password
           </label>
           <input
+
             value={ConfirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             type="password"
