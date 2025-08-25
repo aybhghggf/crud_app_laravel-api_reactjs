@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import Errors from "./Errors";
 
-export default function RegisterForm({ formdata, onChange, boolReq, ResponseErrors }) {
+export default function RegisterForm({ formdata, onChange, boolReq, ResponseErrors={} }) {
   const [localErrors, setLocalErrors] = useState([]);
-
+  console.log(formdata)
   function handleSubmit(e) {
     e.preventDefault();
     let erreurs = [];
@@ -45,9 +45,10 @@ export default function RegisterForm({ formdata, onChange, boolReq, ResponseErro
           Create Account
         </h2>
 
-        {(localErrors.length > 0 || Object.keys(ResponseErrors).length > 0) && (
-          <Errors errors={localErrors} ResponseErrors={ResponseErrors} />
-        )}
+   {(localErrors.length > 0 || (ResponseErrors && Object.keys(ResponseErrors).length > 0)) && (
+  <Errors errors={localErrors} ResponseErrors={ResponseErrors} />
+)}
+
 
         {/* Name */}
         <div className="mb-4">

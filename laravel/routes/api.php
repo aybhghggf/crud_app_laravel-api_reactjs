@@ -3,6 +3,7 @@
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -29,7 +30,23 @@ Route::post('/register', function (Request $request) {
     ]);
     if (!$user) {
         return response()->json(['message' => 'User registration failed'], 500);
-    }else {
-    return response()->json(['message' => 'User registered successfully', 'user' => $user], 201);
+    } else {
+        return response()->json(['message' => 'User registered successfully', 'user' => $user], 201);
+    }
+});
+
+//login route
+Route::post('/login', function (Request $request) {
+    $credentials = $request->validate([
+        'email' => 'required|string|email',
+        'password' => 'required|string|min:8',
+    ]);
+
+    if (!Auth::attempt($credentials)) {
+        return response()->json(false, 401);
+    } else {
+        $user = Auth::user();
+        return response()->json(['message' => 'Login successful', 
+        'user' => $user], 200);
     }
 });

@@ -3,6 +3,11 @@ import "./App.css";
 import SuccessAlert from "./components/SuccessAlert";
 import axios from "axios";
 import RegisterForm from "./components/Register";
+import { Route, Routes, useNavigate } from "react-router-dom";
+import LoginForm from "./components/Login";
+import Dashboard from "./components/Dashboard";
+
+
 
 export default function App() {
   const [formdata, setFormdata] = useState({
@@ -15,6 +20,10 @@ export default function App() {
   const [sendTheRequest, setSendTheRequest] = useState(false);
   const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState(false);
+  const [formLoginData, setFormLoginData] = useState({
+    Email: "",
+    Password: "",
+  });
 
   // handle input change
   function handleChange(e) {
@@ -22,7 +31,7 @@ export default function App() {
     setFormdata((prev) => ({ ...prev, [name]: value }));
     setErrors((prev) => {
       const copy = { ...prev };
-      delete copy[name.toLowerCase()]; // remove error for this field
+      delete copy[name.toLowerCase()];
       return copy;
     });
   }
@@ -37,15 +46,21 @@ export default function App() {
 
     const sendRequest = async () => {
       try {
-        const response = await axios.post("http://localhost:8000/api/register", {
-          name: formdata.Nom,
-          email: formdata.Email,
-          password: formdata.Password,
-          password_confirmation: formdata.ConfirmPassword,
-        });
+        const response = await axios.post(
+          "http://localhost:8000/api/register",
+          {
+            name: formdata.Nom,
+            email: formdata.Email,
+            password: formdata.Password,
+            password_confirmation: formdata.ConfirmPassword,
+          }
+        );
         console.log("Registration successful:", response.data);
         setSuccess(true);
         setErrors({});
+        if(response.data) {
+          setTimeout(() => setSuccess(false), 5000);
+        }
       } catch (error) {
         if (error.response && error.response.data.errors) {
           setErrors(error.response.data.errors);
@@ -60,15 +75,66 @@ export default function App() {
     sendRequest();
   }, [sendTheRequest, formdata]);
 
+  function handleLoginChange(e){
+    const { name, value } = e.target;
+    setFormLoginData((prev) => ({ ...prev, [name]: value }));
+  }
+            const navigate = useNavigate();
+
+  function sendLoginRequest(status){
+    if(!status) return;
+
+    const sendRequest = async () => {
+      try {
+        const response = await axios.post(
+          "http://localhost:8000/api/login",
+          {
+            email: formLoginData.Email,
+            password: formLoginData.Password,
+          }
+        );
+        console.log("Login successful:", response.data);
+        setErrors({});
+        if(response.data) {
+          navigate('/dashboard');
+        }
+      } catch (error) {
+        if (error.response && error.response.status === 401) {
+          setErrors({ login: "Invalid email or password" });
+        } else {
+          console.error("Request error:", error);
+        }
+      } finally {
+        // Reset the trigger after the request is done
+        // setSendTheRequest(false);
+      }
+    };
+
+    sendRequest();
+  }
+
+
+
+
   return (
     <div>
-      {success && <SuccessAlert message="Registration successful!" />}
-      <RegisterForm
+      <Routes>
+        <Route path="/register" element={<RegisterForm 
         formdata={formdata}
         onChange={handleChange}
         boolReq={getRequestStatus}
         ResponseErrors={errors}
-      />
+        />} />
+        <Route path="/login" element={<LoginForm  
+              formdata={formLoginData}
+              onChange={handleLoginChange}
+                      sendRequest={sendLoginRequest}
+
+        />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Routes> 
+      {success && <SuccessAlert message="Registration successful!" />}
+
     </div>
   );
 }
