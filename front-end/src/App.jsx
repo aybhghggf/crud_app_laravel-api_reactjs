@@ -17,6 +17,7 @@ export default function App() {
     ConfirmPassword: "",
   });
 
+  const [users, setUsers] = useState([]);
   const [sendTheRequest, setSendTheRequest] = useState(false);
   const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState(false);
@@ -97,6 +98,7 @@ export default function App() {
         setErrors({});
         if(response.data) {
           navigate('/dashboard');
+          
         }
       } catch (error) {
         if (error.response && error.response.status === 401) {
@@ -113,8 +115,20 @@ export default function App() {
     sendRequest();
   }
 
-
-
+useEffect(()=>{
+    function getAllusers(){
+  // get all users
+  axios.get("http://localhost:8000/api/users")
+  .then(response => {
+    setUsers(response.data);
+  })
+  .catch(error => {
+    console.error("There was an error fetching users!", error);
+  } 
+  );
+}
+getAllusers();
+},[])
 
   return (
     <div>
@@ -131,7 +145,7 @@ export default function App() {
                       sendRequest={sendLoginRequest}
 
         />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/dashboard" element={<Dashboard Users={users}/>} />
       </Routes> 
       {success && <SuccessAlert message="Registration successful!" />}
 

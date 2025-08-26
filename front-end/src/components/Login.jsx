@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 export default function LoginForm({ formdata, onChange, sendRequest }) {
   
@@ -47,9 +48,9 @@ export default function LoginForm({ formdata, onChange, sendRequest }) {
 
         <p className="text-sm text-gray-500 text-center mt-4">
           Don't have an account?{" "}
-          <a href="/register" className="text-blue-500 hover:underline">
+          <Link to="/register" className="text-blue-500 hover:underline">
             Register
-          </a>
+          </Link>
         </p>
       </form>
     </div>

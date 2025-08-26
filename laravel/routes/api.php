@@ -50,3 +50,9 @@ Route::post('/login', function (Request $request) {
         'user' => $user], 200);
     }
 });
+
+//get all users route
+Route::get('/users', function () {
+    $users = User::all();
+    return response()->json($users);
+});
