@@ -56,3 +56,14 @@ Route::get('/users', function () {
     $users = User::all();
     return response()->json($users);
 });
+
+//delete user route
+Route::delete('/users/{id}', function ($id) {
+    $user = User::find($id);
+    if (!$user) {
+        return response()->json(['message' => 'User not found'], 404);
+    }else{
+        $user->delete();
+        return response()->json(['message' => 'User deleted successfully'], 200);   
+    }
+});
